@@ -1,0 +1,105 @@
+<!DOCTYPE html >
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>receipt</title>
+</head>
+<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $().ready(function(){
+        document.getElementById('username').innerHTML= window.localStorage.getItem("username");
+    });
+</script>
+<body style="text-align: center">
+<div align="left" >
+    <a href="/supermarket/back2cashier">返回</a>
+</div>
+<div align="center" style="width: 20%;margin:0 auto ;border: 1px solid #0f0f0f">
+
+    <h2>利民超市</h2>
+
+    <hr/>
+    <table>
+        <tbody>
+        <tr>
+            <td align="left">收银员:<label id ="username"></label></td>
+            <td align="right"><label>机号: Admin</label></td>
+        </tr>
+        <tr>
+            <td align="left"><label>时间</label></td>
+            <td align="right"><label th:text="${date}"></label></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr/>
+    <table>
+        <thead>
+        <tr>
+            <th>商品名称</th>
+            <th>单价</th>
+            <th>数量</th>
+            <th>金额</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item: ${orderItemList}">
+                <td th:text="${item.commodityName}"></td>
+                <td th:text="${item.price}"></td>
+                <td th:text="${item.count}"></td>
+                <td th:text="${item.total}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr/>
+    <table>
+        <tbody>
+        <tr>
+            <td align="left"><label>商品数量</label><label th:text="${category}+'件'"></label></td>
+            <td align="right"><label>合计</label><label th:text="${total_cost}+'元'"></label></td>
+        </tr>
+        <tr th:if="${checkout_type} == true" >
+        <td align="left"><label th:text="收款"></label></td>
+        <td align="right"><label th:text="${cash_receive}+'元'" ></label></td>
+        </tr>
+        <tr th:if="${checkout_type} == true" >
+            <td align="left"><label th:text="找零"></label></td>
+        <td align="right"><label th:text="${cash_balance}+'元'" ></label></td>
+        </tr>
+        <tr th:if="${checkout_type} == false" >
+        <td align="left"><label th:text="积分账号"></label></td>
+        <td align="right"><label th:text="${member_id}"></label></td>
+        </tr>
+        <tr th:if="${checkout_type} == false" >
+            <td align="left"><label th:text="本次积分"></label></td>
+        <td align="right"><label th:text="${member_current_points}"> </label></td>
+        </tr>
+        <tr th:if="${checkout_type} == false" >
+            <td align="left"><label>累计积分</label></td>
+        <td align="right"><label th:text="${member_points} "></label></td>
+        </tr>
+        <tr th:if="${checkout_type} == false" >
+            <td align="left"><label th:text="卡内余额" ></label></td>
+        <td align="right"><label th:text="${cash_balance} +'元'"></label></td>
+        </tr>
+        <tr>
+            <td align="left"><label>小票号</label></td>
+            <td align="right"><label th:text=" ${shoppingNum}"></label></td>
+        </tr>
+        <br>
+        </tbody>
+    </table>
+
+    <hr />
+    <br>
+    <br>
+    谢谢惠顾，欢迎下次光临！
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
+
+</body>
+</html>

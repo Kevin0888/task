@@ -1,0 +1,76 @@
+<!DOCTYPE html >
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>登录</title>
+</head>
+<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    function to_manage_commodities() {
+        $("#login_frm").attr('action', '/supermarket/getToCommodities');
+        $("#login_frm").submit();
+    }
+
+    function to_login() {
+        $("#login_frm").attr('action', '/supermarket/login');
+        $("#login_frm").submit();
+    }
+    function login() {
+        var username = $(" input[ name='username' ] ").val();;
+        if (username == "" || username == undefined) {
+            alert("请输入有效的用户名");
+            return;
+        }
+        var password = $(" input[ name='password' ] ").val();;
+        if (password == "" || password == undefined) {
+            alert("请输入有效的密码");
+            return;
+        }
+       var role = $(" input[ name='role' ] ").val();
+        $.ajax({
+            type: "POST",
+            url: "/supermarket/login",
+            data:  {username: username,password:password,role:role
+            },
+            dataType: "json",
+            success: function (data) {
+                window.localStorage.setItem("username",username);
+                to_login();
+            },
+            error:function(data){
+                window.localStorage.setItem("username",username);
+                to_login();
+            }
+
+        })
+    }
+</script>
+<body>
+<form id="login_frm" method="post">
+    <div align="center">
+        <h1>利民超市</h1>
+        <hr>
+    </div>
+    <div align="center" style="width: 20%;margin:0 auto ;border: 1px solid #0f0f0f;position: absolute;top:30%;left:40%">
+        <input type="hidden" name="submitFlag" value="login"/>
+        <br/>
+        用户名:
+        <input type="text" name="username" id="username"/>
+        <br/>
+        密&#12288码:
+        <input type="password" name="password" id="password"/>
+        <br/>
+        <br/>
+        身&#12288份:
+        <input type="radio"  name="role" value=1>管理员
+        <input type="radio"  name="role" value=2>收银员
+        <br/>
+        <br/>
+        <div align="center">
+            <input type="button" value="登 录" onclick="login()"/>
+            <input type="button" value="进 货" onclick="to_manage_commodities()"/></div>
+    </div>
+    <br/>
+</form>
+</body>
+</html>

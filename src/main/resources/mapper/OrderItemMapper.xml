@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.sale.supermarketboot.dao.OrderItemDao">
+    <insert id="add">
+        insert into tb_order_item(order_number,commodity_id,commodity_name,price,`count`,total,is_checked)
+        values (
+            #{orderNumber,jdbcType=INTEGER},
+            #{commodityId,jdbcType=INTEGER},
+            #{commodityName,jdbcType=VARCHAR},
+            #{price,jdbcType=DOUBLE},
+            #{count,jdbcType=INTEGER},
+            #{total,jdbcType=DOUBLE},
+            #{isChecked,jdbcType=INTEGER}
+        );
+    </insert>
+    <select id="get" resultMap="result_order">
+        SELECT
+            *
+        FROM
+            tb_order_item
+        WHERE
+            order_number = #{orderNum}
+        AND
+            is_checked = 0
+    </select>
+    <!--通过<resultMap>映射实体类属性名和表的字段名对应关系 -->
+    <resultMap type="com.sale.supermarketboot.pojo.OrderItem" id="result_order">
+        <id property="orderNumber" column="order_number"/>
+        <result property="commodityId" column="commodity_id"/>
+        <result property="commodityName" column="commodity_name"/>
+    </resultMap>
+
+    <select id="getAllUncheck" resultType="com.sale.supermarketboot.utils.OrderItemVO">
+        SELECT
+        ord.commodity_Id as commodityId,
+        ord.commodity_name as commodityName,
+        ord.count,
+        ord.order_number as orderNumber,
+        ord.price,
+        ord.total,
+        comm.specification,
+        comm.units,
+        comm.stock
+        FROM
+        tb_order_item ord
+        LEFT JOIN tb_commodity AS comm ON ord.commodity_Id = comm.id
+        WHERE
+        <if test="shopNum != 0">
+            order_number = #{shopNum} and is_checked = 0
+        </if>
+    </select>
+    <select id="getAllChecked" resultType="com.sale.supermarketboot.utils.OrderItemVO">
+        SELECT
+        ord.commodity_Id as commodityId,
+        ord.commodity_name as commodityName,
+        ord.count,
+        ord.order_number as orderNumber,
+        ord.price,
+        ord.total,
+        comm.specification,
+        comm.units,
+        comm.stock
+        FROM
+        tb_order_item ord
+        LEFT JOIN tb_commodity AS comm ON ord.commodity_Id = comm.id
+        WHERE
+        <if test="shopNum != 0">
+            order_number = #{shopNum} and is_checked = 1
+        </if>
+    </select>
+
+    <update id="update">
+        update tb_order_item
+        <trim prefix="set"  suffixOverrides=",">
+            <if test=" orderNumber != 0 ">order_number = #{orderNumber,jdbcType=INTEGER},</if>
+            <if test=" commodityId != 0 ">commodity_id = #{commodityId,jdbcType=INTEGER},</if>
+            <if test=" commodityName !=null and commodityName !='' ">commodity_name = #{commodityName,jdbcType=VARCHAR},</if>
+            <if test=" price != 0.0 ">price = #{price,jdbcType=DOUBLE},</if>
+            <if test=" count != 0 ">`count` = #{count,jdbcType=INTEGER},</if>
+            <if test=" total != 0.0 ">total = #{total,jdbcType=DOUBLE},</if>
+            <if test=" isChecked !=null and isChecked !='' ">is_checked = #{isChecked,jdbcType=INTEGER}</if>
+        </trim>
+        where
+        <if test="orderNumber != 0 ">
+            order_number = #{orderNumber} and commodity_id = #{commodityId} and is_checked = 0
+        </if>
+    </update>
+    <select id="getSameOrder" resultMap="result_orderItem">
+        select
+        *
+        from
+        tb_order_item
+        where
+        <if test="shopNum != 0 ">
+            order_number = #{shopNum} and commodity_id = #{commodityId} and is_checked = 0
+        </if>
+    </select>
+    <!--通过<resultMap>映射实体类属性名和表的字段名对应关系 -->
+    <resultMap type="com.sale.supermarketboot.pojo.OrderItem" id="result_orderItem">
+        <id property="orderNumber" column="order_number"/>
+        <result property="commodityId" column="commodity_id"/>
+        <result property="commodityName" column="commodity_name"/>
+    </resultMap>
+    <delete id="delete">
+        delete
+        from tb_order_item
+        where
+        <if test="orderNum !=null and orderNum != ''">
+            order_number = #{orderNum}
+        </if>
+
+    </delete>
+
+</mapper>
